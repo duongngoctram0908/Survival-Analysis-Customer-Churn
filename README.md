@@ -23,11 +23,11 @@ The Kaplan-Meier estimate reveals the macro-level retention trend of the portfol
 
 ### 2. Risk Segmentation by Contract Type
 Stratifying the portfolio by contract duration shows a significant survival advantage for long-term commitments. Month-to-month contracts exhibit a much steeper hazard rate compared to 1-year and 2-year terms.
-![Risk Comparison](./images/Risk_Comparison_by_Contract_Type.png)
+![Risk Comparison](./images/Risk Comparison by Contract Type.png)
 
 ### 3. Individualized Risk Scoring
 Using the Cox PH model, we generated personalized survival curves for specific customer profiles. This enables "Dynamic Underwriting"—identifying high-risk individuals for targeted retention before the lapse occurs.
-![Individual Predictions](./images/Individual_Sur_Curves.png)
+![Individual Predictions](./images/Individual Sur Curves.png)
 
 ## 💡 Model Insights (Cox PH Summary)
 - **Model Accuracy:** Achieved a **Concordance Index (C-index) of 0.923**, indicating superior predictive power in ranking individual risks.

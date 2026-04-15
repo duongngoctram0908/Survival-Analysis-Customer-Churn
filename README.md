@@ -2,40 +2,41 @@
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![Lifelines](https://img.shields.io/badge/Library-Lifelines-orange)
-![Status](https://img.shields.io/badge/Project-Completed-success)
+![Actuarial Science](https://img.shields.io/badge/Domain-Actuarial%20Science-success)
 
-## 📖 Introduction
-In the insurance and subscription industries, understanding **when** a customer will leave (Lapse/Surrender) is as critical as knowing **if** they will. This project implements an Actuarial approach to model customer retention using the **Cox Proportional Hazards (CPH)** model. 
+## 📌 Project Overview
+In the insurance and subscription-based industries, predicting **when** a customer will leave (Lapse/Surrender) is far more valuable than simply predicting *if* they will. This project applies Actuarial Survival Analysis techniques—specifically the **Kaplan-Meier Estimator** and the **Cox Proportional Hazards (CPH) Model**—to quantify customer retention risk.
 
-The goal is to quantify the impact of various risk factors on the "Time-to-Churn" and generate individual survival curves for dynamic risk assessment.
+The methodology focuses on "Time-to-Event" modeling, providing actionable insights for dynamic pricing and proactive retention strategies.
 
-## 🛠️ Project Pipeline
+## 🛠️ Data Pipeline & Actuarial Preprocessing
+To ensure the robustness of the Cox PH model, the following rigorous data cleaning steps were performed:
+- **Missing Value Imputation:** Handled `TotalCharges` for new policyholders (`tenure = 0`) by filling with 0, ensuring no loss of initial exposure data.
+- **Outlier Management (Winsorizing):** Applied IQR-based capping on `MonthlyCharges`. This treats "Jumbo Risks" (extreme premiums) to prevent them from disproportionately biasing the Hazard Ratios.
+- **Feature Engineering:** Transformed categorical variables (Contract, Payment Method, etc.) into numeric formats while ensuring the avoidance of multicollinearity using `drop_first=True`.
 
-### 1. Advanced Data Cleaning & Actuarial Preprocessing
-Unlike standard machine learning, Survival Analysis requires careful handling of time-to-event data:
-- **Deduplication & Missing Value Treatment:** Handled null `TotalCharges` for new customers (`tenure = 0`) by imputing 0, preserving the initial exposure period.
-- **Outlier Management (Winsorizing):** Applied IQR-based capping on `MonthlyCharges`. In Actuarial terms, this treats "Jumbo Risks" (extreme premiums) to prevent them from disproportionately biasing the hazard ratios.
-- **Feature Encoding:** Transformed categorical variables (Contract, Payment Method, etc.) into numeric formats while ensuring the avoidance of multicollinearity.
+## 📈 Key Visualizations & Results
 
-### 2. Univariate Analysis (Kaplan-Meier)
-- Visualized the overall survival function to identify the baseline retention rate.
-- Stratified the portfolio by **Contract Type** to visualize how long-term commitments significantly shift the survival probability "steps."
+### 1. Overall Survival Probability
+The Kaplan-Meier estimate reveals the macro-level retention trend of the portfolio. The "steps" in the curve identify critical periods where churn events are most frequent.
+![Baseline Survival Curve](./images/KM_estimate.png)
 
-### 3. Multivariate Modeling (Cox Proportional Hazards)
-- **Model Training:** Fitted the CPH model with a `penalizer=0.1` to ensure coefficients remain stable and robust.
-- **Hazard Ratio Interpretation:** Analyzed `exp(coef)` to identify key risk drivers.
-- **Model Evaluation:** Achieved a **Concordance Index (C-index) of 0.92**, indicating superior predictive power in ranking customer risks.
+### 2. Risk Segmentation by Contract Type
+Stratifying the portfolio by contract duration shows a significant survival advantage for long-term commitments. Month-to-month contracts exhibit a much steeper hazard rate compared to 1-year and 2-year terms.
+![Risk Comparison](./images/Risk_Comparison_by_Contract_Type.png)
 
-### 4. Individualized Prediction
-- Generated **Individual Survival Curves** for specific customer profiles.
-- This allows for "Dynamic Pricing" and "Preventive Underwriting"—identifying high-risk individuals before the lapse event occurs.
+### 3. Individualized Risk Scoring
+Using the Cox PH model, we generated personalized survival curves for specific customer profiles. This enables "Dynamic Underwriting"—identifying high-risk individuals for targeted retention before the lapse occurs.
+![Individual Predictions](./images/Individual_Sur_Curves.png)
 
-## 📊 Key Findings from the Model
-- **Contract Power:** 2-year contracts reduce the hazard rate by **95%** compared to month-to-month terms.
-- **Service Impact:** Fiber Optic users exhibit a hazard rate **4x higher** than DSL users, suggesting a significant pricing or service quality sensitivity in high-tier segments.
-- **Automation:** Customers using electronic checks are **57% more likely** to churn than those on automated payment systems.
+## 💡 Model Insights (Cox PH Summary)
+- **Model Accuracy:** Achieved a **Concordance Index (C-index) of 0.923**, indicating superior predictive power in ranking individual risks.
+- **Key Risk Drivers (Hazard Ratios):**
+    - **Contract Term:** **Two-year contracts** are the strongest protective factor, reducing the hazard rate by **95%** ($exp(coef) = 0.05$) compared to month-to-month terms.
+    - **Service Tier:** **Fiber Optic** users exhibit a hazard rate **4.19 times higher** than DSL users, suggesting significant price sensitivity or competitive pressure in high-tier segments.
+    - **Support Services:** Having **Tech Support** reduces the likelihood of churning by **42%** ($exp(coef) = 0.58$).
+    - **Payment Behavior:** Customers using **Electronic Checks** are **57% more likely** to churn than those on automated payment systems.
 
-## 💻 Technical Requirements
-To replicate this analysis, install the following:
+## 🚀 Technical Requirements
 ```bash
 pip install pandas numpy matplotlib lifelines jinja2 openpyxl
